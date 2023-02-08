@@ -1,0 +1,40 @@
+name: "Attachment: OneNote containing HTA with VBScript and JavaScript content (QakBot)"
+description: |
+  A delivery technique leveraged for QakBot malware. A OneNote attachment that leverages an HTA with VBScript and JavaScript script elements.
+type: "rule"
+severity: "high"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=56188625-d386-489e-bf50-604d89675c2a
+  - https://twitter.com/pr0xylife/status/1621616020732649472
+source: |
+  type.inbound 
+  and any(attachments, 
+      (
+          .file_extension in ("one", "onepkg")
+      ) and
+      any(beta.binexplode(.), 
+          .depth == 0 and any(.flavors.yara, . == "onenote_file")
+      ) and 
+      any(beta.binexplode(.), 
+          .depth == 1 and 
+          any(.flavors.yara, . == "html_file") and
+          all(["vbscript","javascript"], 
+              . in map(..scan.html.scripts, .language)
+          )
+      )
+  )
+  and (
+      (
+          sender.email.domain.root_domain in $free_email_providers
+          and sender.email.email not in $recipient_emails
+      )
+      or (
+          sender.email.domain.root_domain not in $free_email_providers
+          and sender.email.domain.domain not in $recipient_domains
+      )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "QakBot"

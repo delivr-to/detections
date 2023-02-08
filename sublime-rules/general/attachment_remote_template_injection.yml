@@ -1,0 +1,56 @@
+name: "Attachment: Remote Template Injection"
+description: |
+  A document, or zipped document that makes use of remote template injection.
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=ef187d5d-3188-483e-b3b5-9ab5e0e032f7
+source: |
+  type.inbound
+  and any(attachments,
+      (
+          (
+              // office files
+              .file_extension in~ ("doc", "docm", "docx", "dot", "dotm", "pptm", "ppsm", "xlm", "xls", "xlsb", "xlsm", "xlt", "xltm")
+
+              // detect files without an extension
+              or .file_type in ("docx")
+          )
+          and any(beta.oletools(.).relationships, 
+              .name =~ "attachedtemplate" and 
+              regex.icontains(.target, "http.*") 
+          )
+      )
+      or (
+          (
+              // explode archives
+              .file_extension in~ $file_extensions_common_archives
+
+              // detect files without an extension
+              or .file_type in ("7z")
+
+              // rtf files
+              or .file_extension in~ ("rtf")
+          )
+
+          and (
+            any(beta.binexplode(.),
+                (
+                    // office files
+                    .flavors.mime == "text/xml" and
+                    any(.scan.strings.strings, regex.icontains(., "attachedTemplate.*target.*http.*"))
+                ) or
+                (
+                    // rtf files
+                    .flavors.mime == "text/rtf" and
+                    any(.scan.strings.strings, regex.icontains(., "attachedTemplate.*target.*http.*"))
+                )
+            )
+          )
+      )
+  )
+
+tags:
+  - "Suspicious Attachment"

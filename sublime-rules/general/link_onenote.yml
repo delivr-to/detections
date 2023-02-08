@@ -1,0 +1,31 @@
+name: "Link: OneNote File"
+description: |
+  Link to a hosted or auto-downloading OneNote file.
+type: "rule"
+severity: "low"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=ea1b0f0e-fe2b-4ec9-8ba6-56cedf98066e
+source: |
+  type.inbound 
+  and any(body.links, 
+      // link to a hosted file / html smuggle
+      any(beta.linkanalysis(.).files_downloaded,
+          any(beta.binexplode(.), 
+              .depth == 0 and any(.flavors.yara, . == "onenote_file")
+          )
+      )
+  )
+  and (
+      (
+          sender.email.domain.root_domain in $free_email_providers
+          and sender.email.email not in $recipient_emails
+      )
+      or (
+          sender.email.domain.root_domain not in $free_email_providers
+          and sender.email.domain.domain not in $recipient_domains
+      )
+  )
+tags:
+  - "Suspicious Link"

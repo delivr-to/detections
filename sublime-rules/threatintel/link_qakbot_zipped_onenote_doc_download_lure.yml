@@ -1,0 +1,47 @@
+name: "Link: Zipped OneNote file with O365 Lure (QakBot)"
+description: |
+  A delivery technique leveraged for QakBot malware. Link to a hosted or auto-downloading zip file that contains a OneNote file which uses a O365 lure.
+type: "rule"
+severity: "high"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=cee09f6e-9cac-4fc9-a033-c69254e6396c
+  - https://twitter.com/pr0xylife/status/1620443413299761154
+source: |
+  type.inbound 
+  and any(body.links, 
+      // Link to a hosted file / html smuggle
+      any(beta.linkanalysis(.).files_downloaded,
+          // top level file type is a zip
+          any(beta.binexplode(.), 
+              .depth == 0 and
+              any(.flavors.yara, . == "zip_file")
+          ) and 
+          // within zip is a OneNote file
+          any(beta.binexplode(.), 
+              .depth == 1 and
+              any(.flavors.yara, . == "onenote_file")
+          ) and 
+          // an embedded image contains common string used in qakbot delivery
+          any(beta.binexplode(.), 
+              .depth == 2 and
+              strings.icontains(.scan.ocr.raw,
+                  "this document contains attachments from the cloud"
+              )
+          )
+      )
+  )
+  and (
+      (
+          sender.email.domain.root_domain in $free_email_providers
+          and sender.email.email not in $recipient_emails
+      )
+      or (
+          sender.email.domain.root_domain not in $free_email_providers
+          and sender.email.domain.domain not in $recipient_domains
+      )
+  )
+tags:
+  - "Suspicious Link"
+  - "QakBot"

@@ -1,0 +1,33 @@
+name: "Link: Brand Impersonation Phishing Site"
+description: |
+  Link to a hosted or auto-downloading zip file that contains a OneNote file.
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=f9452a06-ba9c-41a5-9be1-19a8c1ec2d92
+source: |
+  type.inbound 
+  // Any link we identify as a brand with 
+  // above medium confidence, classified as phishing
+  and any(body.links,
+      beta.linkanalysis(.).credphish.brand.name is not null and 
+      beta.linkanalysis(.).credphish.brand.confidence in ("high", "medium") and
+      beta.linkanalysis(.).credphish.disposition == "phishing"
+  )
+  // Email is unsolicited, i.e. we've not sent anything 
+  // to the sender before
+  and (
+      (
+          sender.email.domain.root_domain in $free_email_providers
+          and sender.email.email not in $recipient_emails
+      )
+      or (
+          sender.email.domain.root_domain not in $free_email_providers
+          and sender.email.domain.domain not in $recipient_domains
+      )
+  )
+tags:
+  - "Suspicious Link"
+  - "Brand Impersonation"

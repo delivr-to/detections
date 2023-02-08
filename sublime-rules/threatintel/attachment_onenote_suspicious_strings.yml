@@ -1,0 +1,48 @@
+name: "Attachment: OneNote file with Suspicious Strings"
+description: |
+  Detection of OneNote files with IoCs from previously observed threat actor activity.
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=56188625-d386-489e-bf50-604d89675c2a
+source: |
+  type.inbound 
+  and any(attachments, 
+      (
+          .file_extension in ("one", "onepkg") or 
+          .file_extension in $file_extensions_common_archives
+      ) and
+      any(beta.binexplode(.), 
+          any(.flavors.yara, . == "onenote_file") and 
+          (
+              any(.scan.strings.strings, strings.ilike(., 
+              "*RegWrite*",
+              "*RegRead*",
+              "IEX",
+              "*system.net.webclient*",
+              "*WScript.Shell*",
+              '*HKCU\SOFTWARE*',
+              "*https://www.instructables.com/How-to-Make-a-message-box-using-VBScript/*",
+              "*This document is corrupted and could not be opened*"
+              )) or 
+              strings.ilike(.scan.ocr.raw, 
+                  "*This document contains attachments from the cloud*"
+              )
+          )
+      )
+  )
+  and (
+      (
+          sender.email.domain.root_domain in $free_email_providers
+          and sender.email.email not in $recipient_emails
+      )
+      or (
+          sender.email.domain.root_domain not in $free_email_providers
+          and sender.email.domain.domain not in $recipient_domains
+      )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "QakBot"
