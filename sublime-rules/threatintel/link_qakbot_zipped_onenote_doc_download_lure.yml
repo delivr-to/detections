@@ -1,6 +1,6 @@
-name: "Link: Zipped OneNote file with O365 Lure (QakBot)"
+name: "Link: Zipped OneNote file with Document Download Lure (QakBot)"
 description: |
-  A delivery technique leveraged for QakBot malware. Link to a hosted or auto-downloading zip file that contains a OneNote file which uses a O365 lure.
+  A delivery technique leveraged for QakBot malware. Link to a hosted or auto-downloading zip file that contains a OneNote file which uses a document download lure.
 type: "rule"
 severity: "high"
 authors:
