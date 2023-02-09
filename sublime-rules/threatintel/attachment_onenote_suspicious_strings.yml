@@ -18,14 +18,16 @@ source: |
           any(.flavors.yara, . == "onenote_file") and 
           (
               any(.scan.strings.strings, strings.ilike(., 
-              "*RegWrite*",
-              "*RegRead*",
-              "IEX",
-              "*system.net.webclient*",
-              "*WScript.Shell*",
-              '*HKCU\SOFTWARE*',
-              "*https://www.instructables.com/How-to-Make-a-message-box-using-VBScript/*",
-              "*This document is corrupted and could not be opened*"
+                  "*RegWrite*",
+                  "*RegRead*",
+                  "*powershell.exe*",
+                  '*C:\Users\Public*',
+                  "*69 6e 76 6f 6b 65 2d 77 65 62 72 65 71 75 65 73 74*", // invoke-webrequest
+                  "*system.net.webclient*",
+                  "*WScript.Shell*",
+                  '*HKCU\SOFTWARE*',
+                  "*https://www.instructables.com/How-to-Make-a-message-box-using-VBScript/*",
+                  "*This document is corrupted and could not be opened*"
               )) or 
               strings.ilike(.scan.ocr.raw, 
                   "*This document contains attachments from the cloud*"
