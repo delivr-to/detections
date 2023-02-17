@@ -7,6 +7,7 @@ All rules present in this repo have corresponding payloads (linked in references
 The repo currently holds the following types of detections:
 
 - [Sublime Rules](#sublime-rules)
+- [Yara Rules](#yara-rules)
 
 
 ## Sublime Rules
@@ -27,3 +28,12 @@ You can also integrate delivr.to directly with Sublime as mentioned [here](https
 | [Link: Zipped OneNote file with Document Download Lure (QakBot)](sublime-rules/threatintel/link_qakbot_zipped_onenote_doc_download_lure.yml) 	               | Threat Intel    |  [![](assets/delivrto.png)](https://delivr.to/payloads?id=cee09f6e-9cac-4fc9-a033-c69254e6396c)         | 
 | [Attachment: OneNote containing HTA with VBScript and JavaScript content (QakBot)](sublime-rules/threatintel/attachment_qakbot_onenote_with_hta_containing_javascript_vbscript.yml) 	               | Threat Intel    |     [![](assets/delivrto.png)](https://delivr.to/payloads?id=56188625-d386-489e-bf50-604d89675c2a)      |
 | [Attachment: Attachment: WSF File With Certificate Content (QakBot)](sublime-rules/threatintel/attachment_wsf_cert_file.yml) 	               | Threat Intel    |     [![](assets/delivrto.png)](https://delivr.to/payloads?id=6f7644eb-f31c-4240-8009-48a8db6fb417)      |
+
+
+## Yara Rules
+
+Below is the list of Yara rules in the repo. 
+
+| Rule Name                                            | Type       | Payload 	| 
+|------------------------------------------------------|------------|----------	| 
+| [SUSP_OneNote_Repeated_FileDataReference_Feb23](yara-rules/onenote_repeated_files.yar)	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=https://delivr.to/payloads?id=2722d95f-f51d-4ad7-aeb1-60a38e52ae5e)        | 
