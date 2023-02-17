@@ -18,6 +18,6 @@ rule SUSP_OneNote_Repeated_FileDataReference_Feb23 {
    condition:
       filesize < 5MB and
       ($one at 0) and 
-      #fdso > 0 and
+      $fdso and
       #fref > (#fdso * 4)
 }
