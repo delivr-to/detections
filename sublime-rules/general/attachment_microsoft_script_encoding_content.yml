@@ -1,0 +1,30 @@
+name: "Attachment: Microsoft Script Encoding Content"
+description: |
+  Attachment containing evidence of Microsoft Script Encoding usage.
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=e8dce489-d33e-46b5-9e9f-cf2713abd213
+  - https://www.vbsedit.com/html/b07f0067-2443-42fb-8b99-b7f3d291d37d.asp
+source: |
+  type.inbound 
+  and any(attachments,
+      any(beta.binexplode(.), 
+          any(.scan.strings.strings, strings.icontains(., "#@~^"))
+      )
+  )
+  // unsolicited
+  and (
+      (
+          sender.email.domain.root_domain in $free_email_providers
+          and sender.email.email not in $recipient_emails
+      )
+      or (
+          sender.email.domain.root_domain not in $free_email_providers
+          and sender.email.domain.domain not in $recipient_domains
+      )
+  )
+tags:
+  - "Suspicious Attachment"
