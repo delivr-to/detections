@@ -8,47 +8,49 @@ authors:
 references:
   - https://delivr.to/payloads?id=56188625-d386-489e-bf50-604d89675c2a
   - https://delivr.to/payloads?id=2722d95f-f51d-4ad7-aeb1-60a38e52ae5e
+  - https://delivr.to/payloads?id=e8dce489-d33e-46b5-9e9f-cf2713abd213
 source: |
   type.inbound 
   and any(attachments, 
+    (
+      .file_extension in ("one", "onepkg") or 
+      .file_extension in $file_extensions_common_archives
+    ) and
+    any(beta.binexplode(.), any(.flavors.yara, . == "onenote_file")) and 
+    any(beta.binexplode(.), 
       (
-          .file_extension in ("one", "onepkg") or 
-          .file_extension in $file_extensions_common_archives
-      ) and
-      any(beta.binexplode(.), 
-          any(.flavors.yara, . == "onenote_file") and 
-          (
-              any(.scan.strings.strings, strings.ilike(., 
-                  "*RegWrite*",
-                  "*RegRead*",
-                  "*rundll32*",
-                  "*<job id=*", //wsf
-                  "*powershell.exe*",
-                  '*C:\Users\Public*',
-                  "*69 6e 76 6f 6b 65 2d 77 65 62 72 65 71 75 65 73 74*", // invoke-webrequest
-                  "*system.net.webclient*",
-                  "*WScript.Shell*",
-                  '*HKCU\SOFTWARE*',
-                  "*https://www.instructables.com/How-to-Make-a-message-box-using-VBScript/*",
-                  "*This document is corrupted and could not be opened*"
-              )) or 
-              strings.ilike(.scan.ocr.raw, 
-                  "*This document contains attachments from the cloud*", // Adobe branding
-                  "*Double-Click The \"Open Protected View\" button to securely view document contents*", //O365 branding
-                  "*Microsoft 365* is the new name for Microsoft's Office 365 subscription service*" //O365 branding
-              )
-          )
+        any(.scan.strings.strings, strings.ilike(., 
+          "*RegWrite*",
+          "*RegRead*",
+          "*rundll32*",
+          "*<job id=*", //wsf
+          "*powershell.exe*",
+          "*#@~^*", // Microsoft Script Encoding File Header, jse, vbe
+          '*C:\Users\Public*',
+          "*69 6e 76 6f 6b 65 2d 77 65 62 72 65 71 75 65 73 74*", // invoke-webrequest
+          "*system.net.webclient*",
+          "*WScript.Shell*",
+          '*HKCU\SOFTWARE*',
+          "*https://www.instructables.com/How-to-Make-a-message-box-using-VBScript/*",
+          "*This document is corrupted and could not be opened*"
+        )) or 
+        strings.ilike(.scan.ocr.raw, 
+          "*This document contains attachments from the cloud*", // Adobe/365 branding
+          "*Double-Click The \"Open Protected View\" button to securely view document contents*", //O365 branding
+          "*Microsoft 365* is the new name for Microsoft's Office 365 subscription service*" //O365 branding
+        )
       )
+    )
   )
   and (
-      (
-          sender.email.domain.root_domain in $free_email_providers
-          and sender.email.email not in $recipient_emails
-      )
-      or (
-          sender.email.domain.root_domain not in $free_email_providers
-          and sender.email.domain.domain not in $recipient_domains
-      )
+    (
+      sender.email.domain.root_domain in $free_email_providers
+      and sender.email.email not in $recipient_emails
+    )
+    or (
+      sender.email.domain.root_domain not in $free_email_providers
+      and sender.email.domain.domain not in $recipient_domains
+    )
   )
 tags:
   - "Suspicious Attachment"
