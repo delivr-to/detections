@@ -1,0 +1,45 @@
+name: "Attachment: PDF with Embedded Google Firebase Storage Link (Bumblebee)"
+description: |
+  PDF attachment containing embedded Google Firebase link, as leveraged by threat actors for malware delivery (e.g. Bumblebee).
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=61b6892e-51d9-4840-8446-4a78c80af5cb
+  - https://twitter.com/pr0xylife/status/1628162045471227906
+source: |
+  type.inbound 
+  and any(attachments, 
+      .file_extension == "pdf" and 
+      any(file.explode(.),
+          any(.scan.strings.strings,
+          strings.icontains(.,"firebasestorage.googleapis.com")
+          )
+      )
+  )
+  // unsolicited
+  and (
+      (
+          sender.email.domain.root_domain in $free_email_providers
+          and sender.email.email not in $recipient_emails
+      )
+      or (
+          sender.email.domain.root_domain not in $free_email_providers
+          and sender.email.domain.domain not in $recipient_domains
+      )
+  )
+  // first time sender
+  and (
+      (
+          sender.email.domain.root_domain in $free_email_providers
+          and sender.email.email not in $sender_emails
+      )
+      or (
+          sender.email.domain.root_domain not in $free_email_providers
+          and sender.email.domain.domain not in $sender_domains
+      )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "Bumblebee"
