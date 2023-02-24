@@ -17,7 +17,8 @@ source: |
           strings.ilike(.scan.ocr.raw, 
               "*someone has shared web archived document*",
               "*document contains files from the cloud*",
-              "*document contains encrypted attachments*"
+              "*document contains encrypted attachments*",
+              "*An update to Adobe® Acrobat® is available*"
           )
       )
   )
