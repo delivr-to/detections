@@ -1,0 +1,37 @@
+name: "Attachment: PDF with Document Download Lure"
+description: |
+  PDF attachment containing text referring to a cloud document download, leveraged for QakBot and Bumblebee malware delivery.
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=ec6185b4-463c-40da-b179-f6bd9368aa3a
+  - https://twitter.com/pr0xylife/status/1628162045471227906
+  - https://twitter.com/pr0xylife/status/1628469554144768000
+source: |
+  type.inbound 
+  and any(attachments, 
+      .file_extension == "pdf" and 
+      any(file.explode(.),
+          strings.ilike(.scan.ocr.raw, 
+              "*document contains files from the cloud*",
+              "*document contains encrypted attachments*"
+          )
+      )
+  )
+  // unsolicited
+  and (
+      (
+          sender.email.domain.root_domain in $free_email_providers
+          and sender.email.email not in $recipient_emails
+      )
+      or (
+          sender.email.domain.root_domain not in $free_email_providers
+          and sender.email.domain.domain not in $recipient_domains
+      )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "Qakbot"
+  - "Bumblebee"
