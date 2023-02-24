@@ -15,6 +15,7 @@ source: |
       .file_extension == "pdf" and 
       any(file.explode(.),
           strings.ilike(.scan.ocr.raw, 
+              "*someone has shared web archived document*",
               "*document contains files from the cloud*",
               "*document contains encrypted attachments*"
           )
