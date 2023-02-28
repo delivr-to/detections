@@ -1,0 +1,34 @@
+name: "Attachment: HTML Smuggling with msSaveOrOpenBlob"
+description: |
+  HTML attachment contains evidence of smuggling using HTML5 JavaScript identifiers including msSaveOrOpenBlob.
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=be91a311-a023-4221-96da-6f5b717fdc54
+  - https://outflank.nl/blog/2018/08/14/html-smuggling-explained/
+source: |
+  type.inbound 
+  and any(attachments,
+      .size < 2097152 and //2mb
+      (
+          .file_extension in~ ("htm", "html", "dhtml", "shtml") or
+          .file_extension in $file_extensions_common_archives or 
+          .file_type == "html"
+      ) and 
+      any(file.explode(.),
+          any(.flavors.yara, . =~ "javascript_file") and 
+          all([
+              'msSaveOrOpenBlob', 
+              'createObjectURL', 
+              'revokeObjectURL', 
+              'appendChild', 
+              'download'
+              ],
+              . in~ ..scan.javascript.strings
+          )   
+      )
+  )
+tags:
+  - "Suspicious Attachment"
