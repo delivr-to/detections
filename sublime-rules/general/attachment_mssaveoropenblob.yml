@@ -19,15 +19,17 @@ source: |
       ) and 
       any(file.explode(.),
           any(.flavors.yara, . =~ "javascript_file") and 
-          all([
-              'msSaveOrOpenBlob', 
-              'createObjectURL', 
-              'revokeObjectURL', 
-              'appendChild', 
-              'download'
-              ],
-              . in~ ..scan.javascript.strings
-          )   
+          any([.scan.javascript.identifiers, .scan.javascript.strings],
+              all([
+                  'msSaveOrOpenBlob', 
+                  'createObjectURL', 
+                  'revokeObjectURL', 
+                  'appendChild', 
+                  'download'
+                  ],
+                  . in~ ..
+              )   
+          )
       )
   )
 tags:
