@@ -1,0 +1,40 @@
+name: "Attachment: HTML File Containing Recipient Email Address (Unsolicited)"
+description: |
+  HTML attachment containing the recipient's email address
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=648f544d-a2b0-4968-884e-a5d1a72f51fb
+source: |
+  type.inbound and 
+  
+  // email sent a single direct recipient
+  length(recipients.to) == 1 and 
+
+  // any HTML attachment
+  any(attachments,
+    .file_type == "html" and 
+    any(file.explode(.),
+      any(recipients.to,
+        // strings in file include reference to the recipient's email address
+        any(..scan.strings.strings, strings.icontains(., ..email.email))
+      )
+    )
+  ) and 
+
+  // unsolicited
+  (
+    (
+        sender.email.domain.root_domain in $free_email_providers
+        and sender.email.email not in $recipient_emails
+    )
+    or (
+        sender.email.domain.root_domain not in $free_email_providers
+        and sender.email.domain.domain not in $recipient_domains
+    )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "HTML Smuggling"
