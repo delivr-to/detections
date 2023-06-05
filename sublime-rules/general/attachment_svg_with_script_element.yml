@@ -1,0 +1,36 @@
+name: "Attachment: SVG file with Script Tags (Unsolicited)"
+description: |
+  SVG attachment that contains a script block that can be leveraged for file smuggling.
+type: "rule"
+severity: "low"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=a0a38332-21b6-4394-b901-3697008e3440
+  - https://delivr.to/payloads?id=3dce858d-7be3-412e-85d9-84f3b9845275
+source: |
+  type.inbound
+  and any(attachments,
+      (
+          .file_extension in~ ("svg") or
+          .file_extension in~ $file_extensions_common_archives
+      )
+      and any(file.explode(.),
+          .file_extension in~ ("svg") and 
+          any(.scan.xml.tags, . == "script")
+      )
+  )
+  // Unsolicited
+  and (
+    (
+      sender.email.domain.root_domain in $free_email_providers
+      and sender.email.email not in $recipient_emails
+    )
+    or (
+      sender.email.domain.root_domain not in $free_email_providers
+      and sender.email.domain.domain not in $recipient_domains
+    )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "HTML Smuggling"
