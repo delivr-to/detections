@@ -1,0 +1,47 @@
+name: "Attachment: Office Document with Embedded RTF Referencing Remote Resources CVE-2023-36884 (Unsolicited)"
+description: |
+  An Office document with an embedded RTF file. This RTF file contains OLE Objects that leverage remote resources, as exploited by CVE-2023-36884.
+type: "rule"
+severity: "critical"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-36884
+  - https://www.mcafee.com/blogs/other-blogs/mcafee-labs/an-inside-look-into-microsoft-rich-text-format-and-ole-exploits/
+  - https://blogs.blackberry.com/en/2023/07/romcom-targets-ukraine-nato-membership-talks-at-nato-summit
+source: |
+  type.inbound
+  and any(attachments,
+      (
+          // Office document or a file archive format
+          .file_extension in $file_extensions_macros or
+          .file_extension in $file_extensions_common_archives 
+      ) and  
+      any(file.explode(.), 
+          // Office extension containing an RTF
+          .file_extension in $file_extensions_macros and 
+          any(.scan.zip.attempted_files, strings.iends_with(., ".rtf"))
+      ) and 
+      any(file.explode(.),
+          // RTF file containing references to an OLE Object with remote resource 
+          .file_extension == "rtf" and 
+          any(.scan.strings.strings,
+              strings.icontains(., '\object') and // embedded OLE Object
+              strings.icontains(., '\objdata') and // embedded OLE Object
+              strings.icontains(., '\objautlink') // remote link embedded OLE Object 
+          )
+      )
+  )
+  and (
+      (
+          sender.email.domain.root_domain in $free_email_providers
+          and sender.email.email not in $recipient_emails
+      )
+      or (
+          sender.email.domain.root_domain not in $free_email_providers
+          and sender.email.domain.domain not in $recipient_domains
+      )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "CVE-2023-36884"
