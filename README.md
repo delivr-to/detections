@@ -20,6 +20,7 @@ You can also integrate delivr.to directly with Sublime as mentioned [here](https
 
 | Rule Name                                            | Type       | Payload 	| 
 |------------------------------------------------------|------------|----------	| 
+| [Attachment: HTML file without HTML element (Unsolicited)](sublime-rules/general/attachment_html_file_without_html_elements.yml) 	               | General    |   [![](assets/delivrto.png)]()        | 
 | [Attachment: SVG file with Script Tags (Unsolicited)](sublime-rules/general/attachment_svg_with_script_element.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=3dce858d-7be3-412e-85d9-84f3b9845275)        | 
 | [Attachment: HTML file with eval function and long byte string (Unsolicited)](sublime-rules/general/attachment_html_eval_byte_string.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=2e5e3a7b-457d-4bd9-8cbe-77d3f403b74c)        | 
 | [Attachment: HTML File Containing Recipient Email Address (Unsolicited)](sublime-rules/general/attachment_html_file_with_recipient_email.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=648f544d-a2b0-4968-884e-a5d1a72f51fb)        | 

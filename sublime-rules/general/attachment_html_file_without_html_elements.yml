@@ -1,0 +1,40 @@
+name: "Attachment: HTML file without HTML element (Unsolicited)"
+description: |
+  HTML attachment with a script XML element, but no HTML element. This is commonly used in phishing emails leveraging HTML smuggling, including those delivering the SocGholish malware variant.
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=db56849c-7ae3-43b4-b07a-527b86217f43
+  - https://delivr.to/payloads?id=05d42aac-c9a1-475e-8311-21010004db87
+  - https://twitter.com/doc_guard/status/1681600219585101824
+  - https://www.malwarebytes.com/blog/threat-intelligence/2023/07/socgholish-copycat-delivers-netsupport-rat
+source: |
+  type.inbound and 
+  any(attachments, 
+      // HTML file (html, shtm, xht, etc.)
+      regex.imatch(.file_extension, '^[sdx]{0,1}ht[ml]{0,2}$') and
+
+      any(file.explode(.), 
+          // Top level file strings contain script but not html tag
+          .depth == 0 and 
+          any(.scan.strings.strings, strings.icontains(., "<script")) and 
+          not any(.scan.strings.strings, strings.icontains(., "<html"))
+      )
+  ) and 
+  // Unsolicited
+  and (
+    (
+      sender.email.domain.root_domain in $free_email_providers
+      and sender.email.email not in $recipient_emails
+    )
+    or (
+      sender.email.domain.root_domain not in $free_email_providers
+      and sender.email.domain.domain not in $recipient_domains
+    )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "HTML Smuggling"
+  - "SocGholish"
