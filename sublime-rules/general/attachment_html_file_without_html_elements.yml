@@ -22,7 +22,7 @@ source: |
           any(.scan.strings.strings, strings.icontains(., "<script")) and 
           not any(.scan.strings.strings, strings.icontains(., "<html"))
       )
-  ) and 
+  ) 
   // Unsolicited
   and (
     (
