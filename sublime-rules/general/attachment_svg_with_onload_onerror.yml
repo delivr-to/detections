@@ -1,0 +1,39 @@
+name: "Attachment: SVG file with Onerror or Onload (Unsolicited)"
+description: |
+  SVG attachment that contains an onerror or onload attribute permitting the execution of arbitrary JavaScript and removing the need for a <script> element.
+type: "rule"
+severity: "low"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=01b3a3e8-dec1-4106-b782-d82c1fe658a9
+source: |
+  type.inbound
+  and any(attachments, 
+      any(file.explode(.),
+          .file_extension == "svg" and
+          (
+              any(.scan.strings.strings,
+                  strings.icontains(., "onload") or 
+                  strings.icontains(., "onerror")
+              ) or
+              any(.scan.yara.matches, 
+                  .name == "SUSP_SVG_Onload_Onerror_Jul23"
+              )
+          )
+      )
+  )
+  // Unsolicited
+  and (
+    (
+      sender.email.domain.root_domain in $free_email_providers
+      and sender.email.email not in $recipient_emails
+    )
+    or (
+      sender.email.domain.root_domain not in $free_email_providers
+      and sender.email.domain.domain not in $recipient_domains
+    )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "HTML Smuggling"
