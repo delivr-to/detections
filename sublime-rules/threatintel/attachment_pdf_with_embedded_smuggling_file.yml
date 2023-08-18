@@ -1,0 +1,57 @@
+name: "Attachment: PDF with Auto-Open Embedded Smuggling File"
+description: |
+  PDF attachment containing an embedded file that auto-opens and is capable of HTML or SVG Smuggling.
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://blog.delivr.to/svg-smuggling-a-picture-worth-a-thousand-words-fae8a946a300
+  - https://delivr.to/payloads?id=8d9b646c-cbf9-434e-8e1e-a014bd6248a7
+  - https://delivr.to/payloads?id=ad657795-f288-45f7-9a8b-7a54132c179a
+  - https://delivr.to/payloads?id=a80984f2-8514-4d11-8a15-b37af675e355
+  - https://twitter.com/si_falconteam/status/1682341485792960513
+source: |
+  type.inbound
+  and any(attachments, 
+      // Attachment is PDF
+      .file_extension == "pdf" and 
+      
+      // PDF contains JavaScript containing indicators of 'AutoOpen' capability.
+      any(file.explode(.),
+          // Snippet from auto-open PDF:
+          // /S /JavaScript
+          // /JS (this.exportDataObject({ cName: "file.html", nLaunch: 2 });)
+          any(.scan.strings.strings, strings.icontains(.,'/JavaScript')) and 
+          any(.scan.strings.strings,strings.icontains(.,'exportDataObject'))
+      ) and 
+      
+      // Within the PDF is a file capable of smuggling, including HTML and SVG formats
+      any(file.explode(.),
+          // The analysed HTML/SVG file is directly embedded in the PDF, rather than being contained in an archive
+          .depth == 1 and 
+          (
+              regex.imatch(.file_extension, '^([sdx]{0,1}ht[ml]{0,2})$') or
+              strings.ilike(.flavors.mime,
+                  "image/svg+xml",
+                  "text/html"
+              ) or 
+              any(.flavors.yara, . == 'html_file')
+          )
+      )
+  )
+  // unsolicited
+  and (
+      (
+          sender.email.domain.root_domain in $free_email_providers
+          and sender.email.email not in $recipient_emails
+      )
+      or (
+          sender.email.domain.root_domain not in $free_email_providers
+          and sender.email.domain.domain not in $recipient_domains
+      )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "Nobelium"
+  - "HTML Smuggling"
