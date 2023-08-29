@@ -15,9 +15,16 @@ logsource:
     product: windows
 detection:
     selection:
-        TargetFilename|contains|all:
-            - '\AppData\Local\Temp\acrobat_sbx\'
+        TargetFilename|contains: '\AppData\Local\Temp\acrobat_sbx\'
+        TargetFilename|endswith:
             - '.html'
+            - '.htm'
+            - '.shtml'
+            - '.dhtml'
+            - '.xhtml'
+            - '.xhtm'
+            - '.xht'
+            - '.svg'
     condition: selection
 falsepositives:
     - Unknown
