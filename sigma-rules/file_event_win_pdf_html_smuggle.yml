@@ -1,0 +1,24 @@
+title: PDF HTML Smuggling
+id: 8a5f8cf0-aebe-49f2-bfcf-3e6b19a54e05
+status: experimental
+description: Detects a HTML file dropped from a PDF file
+references:
+    - https://twitter.com/si_falconteam/status/1682341485792960513
+    - https://delivr.to/payloads?id=10fea5c5-9a05-423d-82cb-ea21e28ddc27
+author: delivr.to
+date: 2023/08/29
+tags:
+    - attack.initial_access
+    - attack.t1566.001
+logsource:
+    category: file_event
+    product: windows
+detection:
+    selection:
+        TargetFilename|contains|all:
+            - '\AppData\Local\Temp\acrobat_sbx\'
+            - '.html'
+    condition: selection
+falsepositives:
+    - Unknown
+level: medium
