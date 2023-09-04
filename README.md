@@ -20,6 +20,16 @@ You can also integrate delivr.to directly with Sublime as mentioned [here](https
 
 | Rule Name                                            | Type       | Payload 	| 
 |------------------------------------------------------|------------|----------	| 
+| [Attachment: PDF with embedded MHT using ActiveMime objects (Unsolicited)](sublime-rules/threatintel/attachment_pdf_activemime_polyglot.yml) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=d93ea8ea-d421-4a1e-955b-a346a9eefa23)        | 
+| [Attachment: Zip Exploiting CVE-2023-38831 (Unsolicited)](sublime-rules/threatintel/attachment_cve_2023_38831.yml) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=ab969e8a-bf5c-45a6-acd0-0dd2b2a34750)        | 
+| [Attachment: PDF with Auto-Open Embedded Smuggling File](sublime-rules/threatintel/attachment_pdf_with_embedded_smuggling_file.yml) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=8d9b646c-cbf9-434e-8e1e-a014bd6248a7)        | 
+| [Attachment: OneNote file with Suspicious Strings](sublime-rules/threatintel/attachment_onenote_suspicious_strings.yml) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=56188625-d386-489e-bf50-604d89675c2a)        | 
+| [Link: Zipped OneNote file with Document Download Lure (QakBot)](sublime-rules/threatintel/link_qakbot_zipped_onenote_doc_download_lure.yml) 	               | Threat Intel    |  [![](assets/delivrto.png)](https://delivr.to/payloads?id=cee09f6e-9cac-4fc9-a033-c69254e6396c)         | 
+| [Attachment: OneNote containing HTA with VBScript and JavaScript content (QakBot)](sublime-rules/threatintel/attachment_qakbot_onenote_with_hta_containing_javascript_vbscript.yml) 	               | Threat Intel    |     [![](assets/delivrto.png)](https://delivr.to/payloads?id=56188625-d386-489e-bf50-604d89675c2a)      |
+| [Attachment: WSF File With Certificate Content (QakBot)](sublime-rules/threatintel/attachment_wsf_cert_file.yml) 	               | Threat Intel    |     [![](assets/delivrto.png)](https://delivr.to/payloads?id=6f7644eb-f31c-4240-8009-48a8db6fb417)      |
+| [Attachment: PDF with Document Download Lure](sublime-rules/threatintel/attachment_pdf_with_document_download_lure.yml) 	               | Threat Intel    |     [![](assets/delivrto.png)](https://delivr.to/payloads?id=5d45687f-b2e3-4add-9b2c-71b68eecb169)      |
+| [Attachment: PDF with Embedded Google Firebase Storage Link (Bumblebee)](sublime-rules/threatintel/attachment_pdf_with_firebase_link.yml) 	               | Threat Intel    |     [![](assets/delivrto.png)](https://delivr.to/payloads?id=61b6892e-51d9-4840-8446-4a78c80af5cb)      |
+| [Attachment: Office Document with Embedded RTF Referencing Remote Resources CVE-2023-36884 (Unsolicited)](sublime-rules/threatintel/attachment_cve_2023_36884.yml) 	               | Threat Intel    |        | 
 | [Attachment: HTML file without HTML element (Unsolicited)](sublime-rules/general/attachment_html_file_without_html_elements.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=db56849c-7ae3-43b4-b07a-527b86217f43)        | 
 | [Attachment: SVG file with Onerror or Onload (Unsolicited)](sublime-rules/general/attachment_svg_with_onload_onerror.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=01b3a3e8-dec1-4106-b782-d82c1fe658a9)        | 
 | [Attachment: SVG file with Script Tags (Unsolicited)](sublime-rules/general/attachment_svg_with_script_element.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=3dce858d-7be3-412e-85d9-84f3b9845275)        | 
@@ -32,15 +42,6 @@ You can also integrate delivr.to directly with Sublime as mentioned [here](https
 | [Link: Brand Impersonation Phishing Site](sublime-rules/general/link_brand_impersonation_phishing_site.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=14bacd0a-a160-4343-80ef-fa7998a32d2d)        | 
 | [Attachment: Remote Template Injection](sublime-rules/general/attachment_remote_template_injection.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=ef187d5d-3188-483e-b3b5-9ab5e0e032f7)        | 
 | [Attachment: HTML Smuggling with msSaveOrOpenBlob](sublime-rules/general/attachment_mssaveoropenblob.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=be91a311-a023-4221-96da-6f5b717fdc54)        | 
-| [Attachment: Zip Exploiting CVE-2023-38831 (Unsolicited)](sublime-rules/threatintel/attachment_cve_2023_38831.yml) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=ab969e8a-bf5c-45a6-acd0-0dd2b2a34750)        | 
-| [Attachment: PDF with Auto-Open Embedded Smuggling File](sublime-rules/threatintel/attachment_pdf_with_embedded_smuggling_file.yml) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=8d9b646c-cbf9-434e-8e1e-a014bd6248a7)        | 
-| [Attachment: OneNote file with Suspicious Strings](sublime-rules/threatintel/attachment_onenote_suspicious_strings.yml) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=56188625-d386-489e-bf50-604d89675c2a)        | 
-| [Link: Zipped OneNote file with Document Download Lure (QakBot)](sublime-rules/threatintel/link_qakbot_zipped_onenote_doc_download_lure.yml) 	               | Threat Intel    |  [![](assets/delivrto.png)](https://delivr.to/payloads?id=cee09f6e-9cac-4fc9-a033-c69254e6396c)         | 
-| [Attachment: OneNote containing HTA with VBScript and JavaScript content (QakBot)](sublime-rules/threatintel/attachment_qakbot_onenote_with_hta_containing_javascript_vbscript.yml) 	               | Threat Intel    |     [![](assets/delivrto.png)](https://delivr.to/payloads?id=56188625-d386-489e-bf50-604d89675c2a)      |
-| [Attachment: WSF File With Certificate Content (QakBot)](sublime-rules/threatintel/attachment_wsf_cert_file.yml) 	               | Threat Intel    |     [![](assets/delivrto.png)](https://delivr.to/payloads?id=6f7644eb-f31c-4240-8009-48a8db6fb417)      |
-| [Attachment: PDF with Document Download Lure](sublime-rules/threatintel/attachment_pdf_with_document_download_lure.yml) 	               | Threat Intel    |     [![](assets/delivrto.png)](https://delivr.to/payloads?id=5d45687f-b2e3-4add-9b2c-71b68eecb169)      |
-| [Attachment: PDF with Embedded Google Firebase Storage Link (Bumblebee)](sublime-rules/threatintel/attachment_pdf_with_firebase_link.yml) 	               | Threat Intel    |     [![](assets/delivrto.png)](https://delivr.to/payloads?id=61b6892e-51d9-4840-8446-4a78c80af5cb)      |
-| [Attachment: Office Document with Embedded RTF Referencing Remote Resources CVE-2023-36884 (Unsolicited)](sublime-rules/threatintel/attachment_cve_2023_36884.yml) 	               | Threat Intel    |        | 
 
 ## Yara Rules
 
@@ -48,6 +49,7 @@ Below is the list of Yara rules in the repo.
 
 | Rule Name                                            | Type       | Payload 	| 
 |------------------------------------------------------|------------|----------	| 
+| [SUSP_PDF_MHT_ActiveMime_Sept23](yara-rules/pdf_mht_activemime.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=d93ea8ea-d421-4a1e-955b-a346a9eefa23)        | 
 | [SUSP_SVG_Onload_Onerror_Jul23](yara-rules/svg_onload_onerror.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=01b3a3e8-dec1-4106-b782-d82c1fe658a9)        | 
 | [SUSP_OneNote_Repeated_FileDataReference_Feb23](yara-rules/onenote_repeated_files.yar)	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=2722d95f-f51d-4ad7-aeb1-60a38e52ae5e)        | 
 | [SUSP_OneNote_RTLO_Character_Feb23](yara-rules/onenote_rtlo_filename.yar)	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=44bab49e-21f0-40ef-8851-f9ea70d6b001)        | 

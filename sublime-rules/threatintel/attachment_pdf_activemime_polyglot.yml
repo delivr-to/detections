@@ -1,0 +1,46 @@
+name: "Attachment: PDF with embedded MHT using ActiveMime objects (Unsolicited)"
+description: |
+  Detection of PDF files with indicators of embedded Word MHT files using ActiveMime.
+type: "rule"
+severity: "high"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=d93ea8ea-d421-4a1e-955b-a346a9eefa23
+source: |
+  type.inbound
+
+  and any(attachments,
+      (
+          // PDF is a direct attachment or this is an archive format
+          (
+              .file_extension == "pdf" and 
+              .file_type == "pdf"
+          ) or 
+          .file_extension in $file_extensions_common_archives
+      ) and 
+      any(file.explode(.),
+          // The file is a PDF but has indicators of MHT with ActiveMime
+          .file_extension == "pdf" and 
+          any(.scan.strings.strings, strings.ilike(., "*mime*")) and 
+          any(.scan.strings.strings, strings.ilike(., "*content-location*")) and 
+          any(.scan.strings.strings, strings.ilike(., "*content-type*")) and 
+          
+          // Specifically a macro definition
+          any(.scan.strings.strings, strings.ilike(., "*Edit-Time-Data*")) 
+      )
+  )
+
+  // Unsolicited
+  and (
+      (
+          sender.email.domain.root_domain in $free_email_providers
+          and sender.email.email not in $recipient_emails
+      )
+      or (
+          sender.email.domain.root_domain not in $free_email_providers
+          and sender.email.domain.domain not in $recipient_domains
+      )
+  )
+tags:
+  - "Suspicious Attachment"
