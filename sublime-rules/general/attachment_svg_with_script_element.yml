@@ -20,17 +20,7 @@ source: |
           any(.scan.xml.tags, . == "script")
       )
   )
-  // Unsolicited
-  and (
-    (
-      sender.email.domain.root_domain in $free_email_providers
-      and sender.email.email not in $recipient_emails
-    )
-    or (
-      sender.email.domain.root_domain not in $free_email_providers
-      and sender.email.domain.domain not in $recipient_domains
-    )
-  )
+  and not profile.by_sender_email().solicited
 tags:
   - "Suspicious Attachment"
   - "HTML Smuggling"

@@ -18,25 +18,14 @@ source: |
   )
   // Email is unsolicited, i.e. we've not sent anything 
   // to the sender before
+  and not profile.by_sender_email().solicited
+
+  // Email is also a first time sender or known bad
   and (
-      (
-          sender.email.domain.root_domain in $free_email_providers
-          and sender.email.email not in $recipient_emails
-      )
+      profile.by_sender_email().prevalence in ("new", "outlier")
       or (
-          sender.email.domain.root_domain not in $free_email_providers
-          and sender.email.domain.domain not in $recipient_domains
-      )
-  )
-  // Email is also a first time sender
-  and (
-      (
-          sender.email.domain.root_domain in $free_email_providers
-          and sender.email.email not in $sender_emails
-      )
-      or (
-          sender.email.domain.root_domain not in $free_email_providers
-          and sender.email.domain.domain not in $sender_domains
+          profile.by_sender_email().any_messages_malicious_or_spam and 
+          not profile.by_sender_email().any_false_positives
       )
   )
 tags:

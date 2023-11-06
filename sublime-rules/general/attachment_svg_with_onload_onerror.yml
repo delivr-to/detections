@@ -11,7 +11,11 @@ source: |
   type.inbound
   and any(attachments, 
       any(file.explode(.),
-          .file_extension == "svg" and
+          (
+            .file_extension == "svg" or 
+            .flavors.mime == "image/svg+xml" or 
+            any(.flavors.yara, . == "svg_file")
+          ) and
           (
               any(.scan.strings.strings,
                   strings.icontains(., "onload") or 
@@ -23,17 +27,7 @@ source: |
           )
       )
   )
-  // Unsolicited
-  and (
-    (
-      sender.email.domain.root_domain in $free_email_providers
-      and sender.email.email not in $recipient_emails
-    )
-    or (
-      sender.email.domain.root_domain not in $free_email_providers
-      and sender.email.domain.domain not in $recipient_domains
-    )
-  )
+  and not profile.by_sender_email().solicited
 tags:
   - "Suspicious Attachment"
   - "HTML Smuggling"
