@@ -1,0 +1,57 @@
+name: "Attachment: Microsoft-branded HTML File (Unsolicited)"
+description: |
+  A unsolicited attachment with a HTML file format, sent by a first time sender or known-bad source, that includes Microsoft branding. Often leveraged for malware delivery, e.g. Bumblebee.
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=37541776-bc8e-4af7-a54e-de97052ec092
+  - https://twitter.com/0xtoxin/status/1722915203040354656
+source: |
+  type.inbound
+
+  // Unsolicited
+  and not profile.by_sender_email().solicited
+
+  // New sender or a known bad profile
+  and (
+      profile.by_sender_email().prevalence in ("new", "outlier") or 
+      (
+          profile.by_sender_email().any_messages_malicious_or_spam and
+          not profile.by_sender_email().any_false_positives
+      )
+  )
+
+  and any(attachments,
+      // HTML file format
+      (
+          regex.imatch(.file_extension, '^[sdx]{0,1}ht[ml]{0,2}') or 
+          .file_type == "html"
+      )
+      // Some MS branding present
+      and 1 of (
+          // HTML screenshot indicates MS branding
+          any(ml.logo_detect(file.html_screenshot(.)).brands,
+              strings.starts_with(.name, "Microsoft")
+          ),
+          // HTML content indicates MS branding
+          any(ml.logo_detect(.).brands,
+              strings.starts_with(.name, "Microsoft")
+          ),
+          // HTML page title is MS related
+          any(file.explode(.), 
+              strings.ilike(.scan.html.title, 
+                  "*Microsoft*", 
+                  "*Teams*", 
+                  "*One*Drive*", 
+                  "*Share*Point*", 
+                  "*Office*365*"
+              )
+          )
+      )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "Brand Impersonation"
+  - "Bumblebee"
