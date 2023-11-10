@@ -1,0 +1,51 @@
+name: "Attachment: HTML Smuggling of Zip File with Evasion Indicators (Unsolicited)"
+description: |
+  A unsolicited attachment with a HTML file format, sent by a first time sender or known-bad source, that includes a Base64-encoded ZIP file header, as well as indicators of evasion in JavaScript (including decoding function and array push/shift manipulation). Leveraged for delivery of Bumblebee malware.
+type: "rule"
+severity: "high"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=37541776-bc8e-4af7-a54e-de97052ec092
+  - https://twitter.com/0xtoxin/status/1722915203040354656
+source: |
+  type.inbound
+
+  // Unsolicited
+  and not profile.by_sender_email().solicited
+
+  // New sender or a known bad profile
+  and (
+      profile.by_sender_email().prevalence in ("new", "outlier") or 
+      (
+          profile.by_sender_email().any_messages_malicious_or_spam and
+          not profile.by_sender_email().any_false_positives
+      )
+  )
+
+  and any(attachments,
+      // HTML file format
+      (
+          regex.imatch(.file_extension, '^[sdx]{0,1}ht[ml]{0,2}') or 
+          .file_type == "html"
+      )
+      and any(file.explode(.),
+          any(.flavors.yara, . == "javascript_file") and 
+          
+          // High entropy JavaScript
+          .scan.entropy.entropy > 5 and 
+          
+          // Array manipulation and evasion indicators
+          all(["push", "shift", "atob"], . in ..scan.javascript.strings) and 
+
+          // Smuggling Indicators
+          all(["octet/stream", "revokeObjectURL", "appendChild", "URL", "click"], . in~ ..scan.javascript.strings) and
+
+          // ZIP B64 File Header
+          any(.scan.javascript.strings, strings.istarts_with(., "UEsDBB"))
+      )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "Brand Impersonation"
+  - "Bumblebee"
