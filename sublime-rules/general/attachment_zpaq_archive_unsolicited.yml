@@ -1,0 +1,34 @@
+name: "Attachment: ZPAQ Archive (Unsolicited)"
+description: |
+  A ZPAQ archive file sent from an unsolicited, first time sender.
+type: "rule"
+severity: "low"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=33ac88a5-56fd-4c64-b01d-9489ea1fe00e
+  - https://www.gdatasoftware.com/blog/2023/11/37822-agent-tesla-zpaq
+source: |
+  type.inbound
+  and any(attachments,
+    .file_extension == "zpaq" or 
+    any(file.explode(.),
+      .file_extension == "zpaq" or 
+      any(.scan.yara.matches, 
+        .name == "SUSP_ZPAQ_Archive_Nov23"
+      )
+    )
+  )
+  and (
+    (
+      profile.by_sender_email().prevalence in ("new", "outlier") and
+      not profile.by_sender_email().solicited
+    )
+    or (
+      profile.by_sender_email().any_messages_malicious_or_spam
+      and not profile.by_sender_email().any_false_positives
+    )
+  )
+
+tags:
+  - "Suspicious Attachment"
