@@ -20,6 +20,7 @@ You can also integrate delivr.to directly with Sublime as mentioned [here](https
 
 | Rule Name                                            | Type       | Payload 	| 
 |------------------------------------------------------|------------|----------	| 
+| [Attachment: ZIP Containing LNK Minimized One-Liner (Unsolicited)](sublime-rules/threatintel/attachment_lnk_oneliner.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=2c258e20-9400-4c5d-9954-91eb2fa21050)        | 
 | [Attachment: HTML Smuggling of Zip File with Evasion Indicators (Unsolicited)](sublime-rules/threatintel/attachment_html_smuggling_zip_with_evasion.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=37541776-bc8e-4af7-a54e-de97052ec092)        | 
 | [Attachment: PDF with embedded MHT using ActiveMime objects (Unsolicited)](sublime-rules/threatintel/attachment_pdf_activemime_polyglot.yml) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=d93ea8ea-d421-4a1e-955b-a346a9eefa23)        | 
 | [Attachment: Zip Exploiting CVE-2023-38831 (Unsolicited)](sublime-rules/threatintel/attachment_cve_2023_38831.yml) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=ab969e8a-bf5c-45a6-acd0-0dd2b2a34750)        | 
