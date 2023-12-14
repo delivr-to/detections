@@ -1,0 +1,36 @@
+name: "Attachment: AutoIt Script File (Unsolicited)"
+description: |
+  An AutoIt script file, either AU3 or A3X.
+type: "rule"
+severity: "low"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=a8e3b1ee-6454-4b45-9b0f-31bf195f059b
+  - https://delivr.to/payloads?id=08e49e24-3b0f-4e91-b2ac-9e4ad94670cf
+  - https://www.acronis.com/en-gb/cyber-protection-center/posts/darkgate-relies-on-malicious-autoit-scripts/
+source: |
+  type.inbound
+
+  and any(attachments,
+      .file_extension in~ ("au3", "a3x") or 
+      (
+          .file_extension in $file_extensions_common_archives and 
+          any(file.explode(.),
+              .file_extension in~ ("au3", "a3x")
+          )
+      )
+  )
+
+  and not profile.by_sender_email().solicited
+
+  and (
+      profile.by_sender_email().prevalence in ("new", "outlier")
+      or (
+          profile.by_sender_email().any_messages_malicious_or_spam
+          and not profile.by_sender_email().any_false_positives
+      )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "DarkGate"
