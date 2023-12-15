@@ -1,0 +1,48 @@
+name: "Link: Zipped Script File (Unsolicited)"
+description: |
+  Link to a hosted or auto-downloading zip file that contains a script file, e.g. a VBS script as used for DarkGate delivery.
+type: "rule"
+severity: "low"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=84e421f8-ffc6-425b-b64d-df0a32e8c679
+source: |
+  type.inbound
+
+  and any(body.links,
+      // Low reputation or file hosting link
+      (
+          .href_url.domain.domain not in $tranco_1m or 
+          .href_url.domain.domain not in $umbrella_1m or 
+          .href_url.domain.domain in $free_file_hosts or 
+          .href_url.domain.domain in $free_subdomain_hosts
+      ) and 
+      // Link downloads file
+      any(beta.linkanalysis(.).files_downloaded,
+          any(file.explode(.),
+              // Top-level file is an archive format
+              .depth == 0
+              and .file_extension in $file_extensions_common_archives 
+              // There are less than 5 files in the zip 
+              and length(.scan.zip.attempted_files) < 5
+          ) and 
+          any(file.explode(.),
+              // Within the archive is a script file. 
+              .depth > 0
+              and .file_extension in ("vbs", "vbe", "wsf", "js", "jse", "ps1", "bat", "cmd")
+          )
+      )
+  )
+
+  and not profile.by_sender_email().solicited
+
+  and (
+      profile.by_sender_email().prevalence in ("new", "outlier")
+      or (
+          profile.by_sender_email().any_messages_malicious_or_spam
+          and not profile.by_sender_email().any_false_positives
+      )
+  )
+tags:
+  - "Suspicious Link"

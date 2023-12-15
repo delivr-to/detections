@@ -44,9 +44,10 @@ You can also integrate delivr.to directly with Sublime as mentioned [here](https
 | [Link: Zipped OneNote file](sublime-rules/general/link_zipped_onenote.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=cee09f6e-9cac-4fc9-a033-c69254e6396c)        | 
 | [Link: OneNote file](sublime-rules/general/link_onenote.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=ea1b0f0e-fe2b-4ec9-8ba6-56cedf98066e)        | 
 | [Link: Brand Impersonation Phishing Site](sublime-rules/general/link_brand_impersonation_phishing_site.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=14bacd0a-a160-4343-80ef-fa7998a32d2d)        | 
+| [Link: Zipped Script File (Unsolicited)](sublime-rules/general/attachment_autoit.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=a8e3b1ee-6454-4b45-9b0f-31bf195f059b)        | 
 | [Attachment: Remote Template Injection](sublime-rules/general/attachment_remote_template_injection.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=ef187d5d-3188-483e-b3b5-9ab5e0e032f7)        | 
 | [Attachment: HTML Smuggling with msSaveOrOpenBlob](sublime-rules/general/attachment_mssaveoropenblob.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=be91a311-a023-4221-96da-6f5b717fdc54)        | 
-| [Attachment: AutoIt Script File (Unsolicited)](sublime-rules/general/attachment_autoit.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=a8e3b1ee-6454-4b45-9b0f-31bf195f059b)        | 
+| [Attachment: AutoIt Script File (Unsolicited)](sublime-rules/general/link_zipped_script.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=84e421f8-ffc6-425b-b64d-df0a32e8c679)        | 
 
 ## Yara Rules
 
