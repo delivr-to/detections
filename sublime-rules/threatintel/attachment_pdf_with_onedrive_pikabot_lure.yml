@@ -1,0 +1,77 @@
+name: "Attachment: PDF Link with Microsoft OneDrive Branding (Pikabot)"
+description: |
+  PDF attachment with Microsoft OneDrive branding, linked content and containing text referring to errors and local download. Leveraged for Pikabot malware delivery.
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://twitter.com/cryptolaemus1/status/1738221304107733410
+  - https://delivr.to/payloads?id=a27587a6-ac97-4174-8f9e-c388ae54b0b4
+source: |
+  type.inbound
+
+  and any(attachments,
+      // PDF Attachment
+      .file_type == "pdf"
+      
+      // OneDrive branding
+      and any(ml.logo_detect(.).brands, 
+          .name == "Microsoft OneDrive"
+      )
+      
+      // Local download/error text
+      and any(file.explode(.),
+          length(.scan.pdf.urls) > 0
+          and length(.scan.ocr.raw) < 500
+          and regex.icontains(.scan.ocr.raw,
+              '(error|problem|fail|issue|down?lo?an?d)'
+          )
+      )
+  )
+
+  and sender.email.domain.root_domain not in $org_domains
+
+  // Non-MS origin
+  and sender.email.domain.root_domain not in (
+    "bing.com",
+    "microsoft.com",
+    "microsoftonline.com",
+    "microsoftsupport.com",
+    "microsoft365.com",
+    "office.com",
+    "onedrive.com",
+    "sharepointonline.com",
+    "yammer.com"
+  )
+
+  // negate highly trusted sender domains unless they fail DMARC authentication
+  and (
+    (
+      sender.email.domain.root_domain in $high_trust_sender_root_domains
+      and (
+        any(distinct(headers.hops, .authentication_results.dmarc is not null),
+            strings.ilike(.authentication_results.dmarc, "*fail")
+        )
+      )
+    )
+    or sender.email.domain.root_domain not in $high_trust_sender_root_domains
+  )
+
+  // unsolicited or known-bad sender
+  and (
+    (
+      not profile.by_sender().solicited
+    )
+    or (
+      profile.by_sender().any_messages_malicious_or_spam
+      and not profile.by_sender().any_false_positives
+    )
+  )
+
+  // no FPs
+  and not profile.by_sender().any_false_positives
+
+tags:
+  - "Suspicious Attachment"
+  - "Pikabot"
