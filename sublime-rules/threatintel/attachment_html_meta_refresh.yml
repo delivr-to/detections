@@ -1,0 +1,51 @@
+name: "Attachment: HTML with Meta Tag Refresh and File Protocol Handler (Pikabot)"
+description: |
+  A unsolicited attachment with a HTML file format, sent by an unsolicited sender, that includes a http-equiv attribute in its meta tag, used to initiate a file download or redirect to an attacker-controlled site via a 'file' protocol handler. Leveraged for delivery of Pikabot malware.
+type: "rule"
+severity: "high"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=86dc74b5-ed67-41c9-8dc9-889ef11304d2
+  - https://twitter.com/affje0x65/status/1762408184315085260
+source: |
+  type.inbound
+
+  and any(attachments,
+      // File is a HTML file type or an archive
+      (
+          regex.imatch(.file_extension, '^[sdx]{0,1}ht[ml]{0,2}$') or
+          .file_extension in~ $file_extensions_common_archives or
+          .file_type == "html"
+      ) and 
+      any(file.explode(.),
+          .flavors.mime == "text/html" and
+          // Meta tag present in XML structure
+          any(.scan.xml.tags, . == "meta") and
+          // Meta tag includes refresh and file:// strings
+          any(.scan.strings.strings,
+              regex.icontains(.,
+                  '<meta.*http-equiv=.*refresh.*content=.*url.*file://'
+              )
+          )
+      )
+  )
+
+  // unsolicited
+  and not profile.by_sender_email().solicited
+
+  // negate highly trusted sender domains unless they fail DMARC authentication
+  and (
+      (
+        sender.email.domain.root_domain in $high_trust_sender_root_domains
+        and (
+          any(distinct(headers.hops, .authentication_results.dmarc is not null),
+              strings.ilike(.authentication_results.dmarc, "*fail")
+          )
+        )
+      )
+      or sender.email.domain.root_domain not in $high_trust_sender_root_domains
+  )
+tags:
+  - "Suspicious Attachment"
+  - "Pikabot"
