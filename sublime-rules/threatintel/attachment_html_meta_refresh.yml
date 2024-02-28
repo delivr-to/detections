@@ -20,8 +20,7 @@ source: |
       ) and 
       any(file.explode(.),
           .flavors.mime == "text/html" and
-          // Meta tag present in XML structure
-          any(.scan.xml.tags, . == "meta") and
+          
           // Meta tag includes refresh and file:// strings
           any(.scan.strings.strings,
               regex.icontains(.,
