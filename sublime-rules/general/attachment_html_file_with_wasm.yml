@@ -1,0 +1,44 @@
+name: "Attachment: HTML smuggling with WebAssembly (Wasm)"
+description: |
+  HTML attachment contains code associated with compiling, loading or executing WebAssembly (Wasm).  
+authors:
+  - twitter: "delivr_to"
+type: "rule"
+severity: "medium"
+references:
+  - https://delivr.to/payloads?id=47af8e7b-9511-4e8f-adc2-03dcaf938498
+  - https://delivr.to/payloads?id=126f0f5f-f2da-488e-9c82-af0aea90f154
+  - https://delivr.to/payloads?id=56eddccc-63a9-42ec-928a-f6f598c93dd8
+source: |
+type.inbound
+and (
+  profile.by_sender().prevalence in ("new", "outlier")
+  or (
+    profile.by_sender().any_messages_malicious_or_spam
+    and not profile.by_sender().any_false_positives
+  )
+)
+and any(attachments,
+      (
+          regex.imatch(.file_extension, '^[sdx]{0,1}ht[ml]{0,2}$') or
+          .file_extension in~ $file_extensions_common_archives or
+          .file_type == "html"
+      )
+        and any(file.explode(.),
+                any(.scan.strings.strings,
+                    strings.ilike(.,
+                                  "*new WebAssembly.Instance*",
+                                  "*WebAssembly.instantiate*",
+                                  "*WebAssembly.compile*",
+                                  "*wbg_load*",
+                                  "*wbg_init*",
+                                  "*bmV3IFdlYkFzc2VtYmx5Lkluc3RhbmNl*",
+                                  "*d2JnX2xvYWQ*",
+                                  "*d2JnX2luaXQ*"
+                    )
+                )
+        )
+)
+tags:
+  - "Suspicious Attachment"
+  - "HTML Smuggling"
