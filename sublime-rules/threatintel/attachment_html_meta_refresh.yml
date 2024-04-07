@@ -1,6 +1,6 @@
 name: "Attachment: HTML with Meta Tag Refresh and File Protocol Handler (Pikabot)"
 description: |
-  A unsolicited attachment with a HTML file format, sent by an unsolicited sender, that includes a http-equiv attribute in its meta tag, used to initiate a file download or redirect to an attacker-controlled site via a 'file' protocol handler. Leveraged for delivery of Pikabot malware.
+  A HTML attachment, sent by an unsolicited sender, that includes a http-equiv attribute in its meta tag, used to initiate a file download or redirect to an attacker-controlled site via a 'file' protocol handler. Leveraged for delivery of Pikabot malware.
 type: "rule"
 severity: "high"
 authors:

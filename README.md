@@ -20,6 +20,7 @@ You can also integrate delivr.to directly with Sublime as mentioned [here](https
 
 | Rule Name                                            | Type       | Payload 	| 
 |------------------------------------------------------|------------|----------	| 
+| [Attachment: HTML with search-ms URI protocol handler (DarkGate)](sublime-rules/threatintel/attachment_html_search_ms.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=e3d89f22-df99-4693-b788-03022288ec43)        | 
 | [Attachment: HTML with Meta Tag Refresh and File Protocol Handler (Pikabot)](sublime-rules/threatintel/attachment_html_meta_refresh.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=86dc74b5-ed67-41c9-8dc9-889ef11304d2)        | 
 | [Attachment: PDF Link with Microsoft OneDrive Branding (Pikabot)](sublime-rules/threatintel/attachment_pdf_with_onedrive_pikabot_lure.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=a27587a6-ac97-4174-8f9e-c388ae54b0b4)        | 
 | [Attachment: ZIP Containing LNK Minimized One-Liner (Unsolicited)](sublime-rules/threatintel/attachment_lnk_oneliner.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=2c258e20-9400-4c5d-9954-91eb2fa21050)        | 

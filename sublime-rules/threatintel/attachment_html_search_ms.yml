@@ -1,0 +1,49 @@
+name: "Attachment: HTML with search-ms URI protocol handler (DarkGate)"
+description: |
+  An unsolicited HTML file attachment, that includes a "search-ms" URI protocol handler string, either in plaintext, or several permutations of base64 and string-reversal. Leveraged for delivery of DarkGate malware.
+type: "rule"
+severity: "high"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=e3d89f22-df99-4693-b788-03022288ec43
+  - https://twitter.com/Cryptolaemus1/status/1772757743062913152
+source: |
+  type.inbound
+
+  and any(attachments,
+      regex.imatch(.file_extension, '^[sdx]{0,1}ht[ml]{0,2}$') and
+      any(file.explode(.),
+          any(.scan.strings.strings, 
+              strings.ilike(.,
+                  "*c2VhcmNoLW1zOnF1ZXJ5*", //search-ms:query B64
+                  "*5JXZ1FnOz1WLoNmchV2c*", //search-ms:query B64 rev
+                  "*c2VhcmNoLW1zOi8vcXVlcnk*", //search-ms://query B64
+                  "*knclVXcv8iOz1WLoNmchV2c*", //search-ms://query B64 rev
+                  "*c2VhcmNoOnF1ZXJ5*", //search:query B64
+                  "*5JXZ1FnOoNmchV2c*", //search:query B64 rev
+                  "*search-ms:query*location:\\\\*",
+                  "*search:query*location:\\\\*"
+              )
+          )
+      )
+  )
+
+  // unsolicited
+  and not profile.by_sender_email().solicited
+
+  // negate highly trusted sender domains unless they fail DMARC authentication
+  and (
+      (
+      sender.email.domain.root_domain in $high_trust_sender_root_domains
+      and (
+          any(distinct(headers.hops, .authentication_results.dmarc is not null),
+              strings.ilike(.authentication_results.dmarc, "*fail")
+          )
+      )
+      )
+      or sender.email.domain.root_domain not in $high_trust_sender_root_domains
+  )
+tags:
+  - "Suspicious Attachment"
+  - "DarkGate"
