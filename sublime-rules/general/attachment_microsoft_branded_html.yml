@@ -11,16 +11,16 @@ references:
 source: |
   type.inbound
 
-  // Unsolicited
-  and not profile.by_sender_email().solicited
-
-  // New sender or a known bad profile
   and (
-      profile.by_sender_email().prevalence in ("new", "outlier") or 
       (
-          profile.by_sender_email().any_messages_malicious_or_spam and
-          not profile.by_sender_email().any_false_positives
+          not profile.by_sender_email().solicited
+          and profile.by_sender_email().prevalence in ("new", "outlier")
       )
+      or (
+          profile.by_sender_email().any_messages_malicious_or_spam
+          and not profile.by_sender_email().any_false_positives
+      )
+      or sender.email.domain.domain == "delivrto.me"
   )
 
   and any(attachments,

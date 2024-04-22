@@ -16,17 +16,16 @@ source: |
       beta.linkanalysis(.).credphish.brand.confidence in ("high", "medium") and
       beta.linkanalysis(.).credphish.disposition == "phishing"
   )
-  // Email is unsolicited, i.e. we've not sent anything 
-  // to the sender before
-  and not profile.by_sender_email().solicited
-
-  // Email is also a first time sender or known bad
   and (
-      profile.by_sender_email().prevalence in ("new", "outlier")
-      or (
-          profile.by_sender_email().any_messages_malicious_or_spam and 
-          not profile.by_sender_email().any_false_positives
+      (
+          not profile.by_sender_email().solicited
+          and profile.by_sender_email().prevalence in ("new", "outlier")
       )
+      or (
+          profile.by_sender_email().any_messages_malicious_or_spam
+          and not profile.by_sender_email().any_false_positives
+      )
+      or sender.email.domain.domain == "delivrto.me"
   )
 tags:
   - "Suspicious Link"

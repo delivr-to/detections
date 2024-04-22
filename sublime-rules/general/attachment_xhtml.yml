@@ -15,7 +15,10 @@ source: |
       .file_extension in~ ("xht", "xhtm", "xhtml")
   ) 
   
-  and not profile.by_sender_email().solicited
+  and (
+    not profile.by_sender_email().solicited
+    or sender.email.domain.domain == "delivrto.me"
+  )
 tags:
   - "Suspicious Attachment"
   - "HTML Smuggling"

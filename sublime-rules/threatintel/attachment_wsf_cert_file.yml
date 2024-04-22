@@ -16,7 +16,10 @@ source: |
       )
   )
   // unsolicited
-  and not profile.by_sender_email().solicited
+  and (
+    not profile.by_sender_email().solicited
+    or sender.email.domain.domain == "delivrto.me"
+  )
 
 tags:
   - "Suspicious Attachment"
