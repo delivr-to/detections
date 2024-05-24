@@ -1,0 +1,57 @@
+name: "Link: PIF File from Suspicious Source (AgentTesla)"
+description: |
+  A delivery technique leveraged for AgentTesla infostealer malware. A link to a hosted or auto-downloading PIF file.
+type: "rule"
+severity: "high"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/?id=756f48df-4e6b-4855-bbb6-e673dfd4c705
+  - https://blog.delivr.to/analysis-of-an-agenttesla-pif-sample-ad3785ff1609
+source: |
+  type.inbound
+
+  and any(body.links,
+      1 of (
+          // Original AgentTesla Link
+          network.whois(.href_url.domain).registrant_country_code =~ "RU",
+          // Other suspicious attributes of link
+          network.whois(.href_url.domain).days_old < 30,
+          .href_url.domain.domain in $free_subdomain_hosts,
+          .href_url.domain.domain in $free_file_hosts,
+          .href_url.domain.root_domain in $free_subdomain_hosts,
+          .href_url.domain.root_domain in $free_file_hosts,
+          sender.email.domain.domain == "delivrto.me"
+      )
+
+      and 1 of (
+          // Static URL analysis, link ends with PIF
+          strings.iends_with(.href_url.url, ".pif"),
+
+          // Payload fetch, file is PIF or has NSIS indicators
+          any(ml.link_analysis(.href_url).files_downloaded,
+              .file_extension == "pif" or 
+              any(file.explode(.),
+                  any(.flavors.yara, . == "mz_file") and 
+                  any(.scan.strings.strings,
+                      strings.ilike(., 
+                          "*Nullsoft Install System*", 
+                          "*NSIS*"
+                      )
+                  )
+              ) 
+          )
+      )
+  )
+
+  and (
+    (
+    profile.by_sender().prevalence in ("new", "outlier")
+    and not profile.by_sender().solicited
+    ) 
+    or sender.email.domain.domain == "delivrto.me"
+  )
+
+tags:
+  - "Suspicious Link"
+  - "AgentTesla"

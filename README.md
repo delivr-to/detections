@@ -20,6 +20,7 @@ You can also integrate delivr.to directly with Sublime as mentioned [here](https
 
 | Rule Name                                            | Type       | Payload 	| 
 |------------------------------------------------------|------------|----------	| 
+| [Link: PIF File from Suspicious Source (AgentTesla)](sublime-rules/threatintel/link_agenttesla_pif.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=756f48df-4e6b-4855-bbb6-e673dfd4c705)        | 
 | [Attachment: HTML with search-ms URI protocol handler (DarkGate)](sublime-rules/threatintel/attachment_html_search_ms.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=e3d89f22-df99-4693-b788-03022288ec43)        | 
 | [Attachment: HTML with Meta Tag Refresh and File Protocol Handler (Pikabot)](sublime-rules/threatintel/attachment_html_meta_refresh.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=86dc74b5-ed67-41c9-8dc9-889ef11304d2)        | 
 | [Attachment: PDF Link with Microsoft OneDrive Branding (Pikabot)](sublime-rules/threatintel/attachment_pdf_with_onedrive_pikabot_lure.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=a27587a6-ac97-4174-8f9e-c388ae54b0b4)        | 
@@ -35,6 +36,7 @@ You can also integrate delivr.to directly with Sublime as mentioned [here](https
 | [Attachment: PDF with Document Download Lure](sublime-rules/threatintel/attachment_pdf_with_document_download_lure.yml) 	               | Threat Intel    |     [![](assets/delivrto.png)](https://delivr.to/payloads?id=5d45687f-b2e3-4add-9b2c-71b68eecb169)      |
 | [Attachment: PDF with Embedded Google Firebase Storage Link (Bumblebee)](sublime-rules/threatintel/attachment_pdf_with_firebase_link.yml) 	               | Threat Intel    |     [![](assets/delivrto.png)](https://delivr.to/payloads?id=61b6892e-51d9-4840-8446-4a78c80af5cb)      |
 | [Attachment: Office Document with Embedded RTF Referencing Remote Resources CVE-2023-36884 (Unsolicited)](sublime-rules/threatintel/attachment_cve_2023_36884.yml) 	               | Threat Intel    |        | 
+| [Attachment: HTML smuggling with WebAssembly (Wasm)](sublime-rules/general/attachment_html_file_with_wasm.yml ) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=126f0f5f-f2da-488e-9c82-af0aea90f154)        | 
 | [Attachment: ZPAQ Archive (Unsolicited)](sublime-rules/general/attachment_zpaq_archive_unsolicited.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=33ac88a5-56fd-4c64-b01d-9489ea1fe00e)        | 
 | [Attachment: Microsoft-branded HTML File (Unsolicited)](sublime-rules/general/attachment_microsoft_branded_html.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=37541776-bc8e-4af7-a54e-de97052ec092)        | 
 | [Attachment: HTML file without HTML element (Unsolicited)](sublime-rules/general/attachment_html_file_without_html_elements.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=db56849c-7ae3-43b4-b07a-527b86217f43)        | 
@@ -59,6 +61,8 @@ Below is the list of Yara rules in the repo.
 
 | Rule Name                                            | Type       | Payload 	| 
 |------------------------------------------------------|------------|----------	| 
+| [SUSP_HTML_WASM_Smuggling](yara-rules/html_wasm.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=126f0f5f-f2da-488e-9c82-af0aea90f154)        | 
+| [SUSP_HTML_B64_WASM_Blob](yara-rules/html_wasm.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=126f0f5f-f2da-488e-9c82-af0aea90f154)        | 
 | [SUSP_ZPAQ_Archive_Nov23](yara-rules/zpaq_archives.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=33ac88a5-56fd-4c64-b01d-9489ea1fe00e)        | 
 | [SUSP_PDF_MHT_ActiveMime_Sept23](yara-rules/pdf_mht_activemime.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=d93ea8ea-d421-4a1e-955b-a346a9eefa23)        | 
 | [SUSP_SVG_Onload_Onerror_Jul23](yara-rules/svg_onload_onerror.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=01b3a3e8-dec1-4106-b782-d82c1fe658a9)        | 
