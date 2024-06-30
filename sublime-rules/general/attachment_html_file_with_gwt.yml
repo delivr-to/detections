@@ -1,0 +1,41 @@
+name: "Attachment: HTML smuggling with Google Web Toolkit (GWT)"
+description: |
+  HTML attachment contains JavaScript associated with Google Web Toolkit.  
+authors:
+  - twitter: "delivr_to"
+type: "rule"
+severity: "low"
+references:
+  - https://delivr.to/payloads?id=a9d13662-2cbf-4c96-9f2e-f303afed8c6e
+  - https://delivr.to/payloads?id=97fa9f10-6fe5-4286-85f6-4484cee0c3d4
+source: |
+  type.inbound
+  and (
+    (
+      not profile.by_sender_email().solicited
+      and profile.by_sender_email().prevalence in ("new", "outlier")
+    )
+    or (
+      profile.by_sender_email().any_messages_malicious_or_spam
+      and not profile.by_sender_email().any_false_positives
+    )
+    or sender.email.domain.domain == "delivrto.me"
+  )
+  and any(attachments,
+    (
+      regex.imatch(.file_extension, '^[sdx]{0,1}ht[ml]{0,2}$')
+      or .file_extension in~ $file_extensions_common_archives
+      or .file_type == "html"
+    )
+    and any(file.explode(.),
+      any(.scan.strings.strings,
+        strings.ilike(.,
+          "*$gwt_version*",
+          "*com.google.gwt*"
+        )
+      )
+    )
+  )
+tags:
+  - "Suspicious Attachment"
+  - "HTML Smuggling"
