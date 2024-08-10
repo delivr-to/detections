@@ -1,6 +1,6 @@
 name: "Attachment: HTML with Meta Tag Refresh and File Protocol Handler (Pikabot)"
 description: |
-  A HTML attachment, sent by an unsolicited sender, that includes a http-equiv attribute in its meta tag, used to initiate a file download or redirect to an attacker-controlled site via a 'file' protocol handler. Leveraged for delivery of Pikabot malware.
+  A HTML attachment, sent by an unsolicited sender, that includes a http-equiv attribute in its meta tag, used to initiate a file download or redirect to an attacker-controlled site via a 'file' or 'search-ms' protocol handler. Leveraged for delivery of Pikabot malware.
 type: "rule"
 severity: "high"
 authors:
@@ -8,6 +8,7 @@ authors:
 references:
   - https://delivr.to/payloads?id=86dc74b5-ed67-41c9-8dc9-889ef11304d2
   - https://twitter.com/affje0x65/status/1762408184315085260
+  - https://dfir.ch/posts/search-ms_protocol_handler/
 source: |
   type.inbound
 
@@ -24,7 +25,7 @@ source: |
           // Meta tag includes refresh and file:// strings
           any(.scan.strings.strings,
               regex.icontains(.,
-                  '<meta.*http-equiv=.*refresh.*content=.*url.*file://'
+                  '<meta.*http-equiv=.*refresh.*content=.*url.*(file://|search.*query)'
               )
           )
       )
@@ -49,6 +50,7 @@ source: |
     )
     or sender.email.domain.domain == "delivrto.me"
   )
+
 tags:
   - "Suspicious Attachment"
   - "Pikabot"
