@@ -1,0 +1,34 @@
+name: "Body: Img Element Exploiting CVE-2024-38021 (Unsolicited)"
+description: |
+  A email body that contains an img element with a moniker link, exhibiting the attributes required to exploit CVE-2024-38021.
+type: "rule"
+severity: "critical"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://msrc.microsoft.com/update-guide/en-US/vulnerability/CVE-2024-38021
+  - https://media.defcon.org/DEF%20CON%2032/DEF%20CON%2032%20presentations/DEF%20CON%2032%20-%20Michael%20Gorelik%20Arnold%20Osipov%20-%20Outlook%20Unleashing%20RCE%20Chaos%20CVE-2024-30103%20%26%20CVE-2024-38021.pdf
+  - https://delivr.to/?id=a0c7d2a6-4fb0-4120-b658-17a408c2d68e
+source: |
+  type.inbound
+
+  and (
+      (
+          not profile.by_sender_email().solicited
+          and profile.by_sender_email().prevalence in ("new", "outlier")
+      )
+      or (
+          profile.by_sender_email().any_messages_malicious_or_spam
+          and not profile.by_sender_email().any_false_positives
+      )
+      or sender.email.domain.domain == "delivrto.me"
+  )
+  
+  // matches <img src="\\...\...!...">
+  and regex.icontains(body.html.raw,
+      '<img.*src=.\\\\[\w\.\\-]{1,}\.\w{2,4}\!\w+.*>'
+  )
+
+tags:
+  - "Suspicious content"
+  - "CVE-2024-38021"

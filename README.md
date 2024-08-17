@@ -20,6 +20,7 @@ You can also integrate delivr.to directly with Sublime as mentioned [here](https
 
 | Rule Name                                            | Type       | Payload 	| 
 |------------------------------------------------------|------------|----------	| 
+| [Body: Img Element Exploiting CVE-2024-38021 (Unsolicited)](sublime-rules/threatintel/body_cve_2024_38021.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=a0c7d2a6-4fb0-4120-b658-17a408c2d68e)        | 
 | [Link: PIF File from Suspicious Source (AgentTesla)](sublime-rules/threatintel/link_agenttesla_pif.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=756f48df-4e6b-4855-bbb6-e673dfd4c705)        | 
 | [Attachment: HTML with search-ms URI protocol handler (DarkGate)](sublime-rules/threatintel/attachment_html_search_ms.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=e3d89f22-df99-4693-b788-03022288ec43)        | 
 | [Attachment: HTML with Meta Tag Refresh and File Protocol Handler (Pikabot)](sublime-rules/threatintel/attachment_html_meta_refresh.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=86dc74b5-ed67-41c9-8dc9-889ef11304d2)        | 
