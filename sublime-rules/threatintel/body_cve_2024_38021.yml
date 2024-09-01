@@ -23,10 +23,12 @@ source: |
       )
       or sender.email.domain.domain == "delivrto.me"
   )
-  
-  // matches <img src="\\...\...!...">
+
+  // matches:
+  //  <img src="\\...\...!..."> 
+  //  <img src="file:///\\...\...!...">
   and regex.icontains(body.html.raw,
-      '<img.*src=.\\\\[\w\.\\-]{1,}\.\w{2,4}\!\w+.*>'
+      '<img.*src=.(file:\/\/\/)?\\\\[\w\.\\-]{1,}\.\w{2,4}\!\w+.*>'
   )
 
 tags:
