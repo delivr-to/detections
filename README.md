@@ -72,6 +72,7 @@ Below is the list of Yara rules in the repo.
 | [SUSP_OneNote_RTLO_Character_Feb23](yara-rules/onenote_rtlo_filename.yar)	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=44bab49e-21f0-40ef-8851-f9ea70d6b001)        | 
 | [SUSP_OneNote_Win_Script_Encoding_Feb23](yara-rules/onenote_windows_script_encoding_file.yar )	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=e8dce489-d33e-46b5-9e9f-cf2713abd213)        | 
 | [SUSP_msg_CVE_2023_23397_Mar23](yara-rules/msg_cve_2023_23397.yar )	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=494a2718-a012-45d5-9fe8-27465b0c1809)        | 
+| [SUSP_CONCAT_ZIP_Nov24](yara-rules/concatenated_zip.yar )	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=a8ebf059-b4e6-4d83-9953-6a97cdd5b5b0)        | 
 
 ## Sigma Rules
 
