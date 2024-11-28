@@ -1,0 +1,56 @@
+name: "Attachment: HTML with Clipboard Copy"
+description: |
+  A HTML attachment, sent by an unsolicited sender, that includes a JavaScript method that writes content to the user's clipboard. This is typically employed as part of a pastejacking attack, whereby the user is encouraged to paste the content into their terminal and execute it to achieve infection. 
+type: "rule"
+severity: "high"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://www.trellix.com/blogs/research/onedrive-pastejacking
+  - https://delivr.to/?id=ba093532-4a4a-488d-97fd-eadf3eb93bc2
+source: |
+  type.inbound
+
+  and any(attachments,
+      // File is a HTML file type or an archive
+      (
+          regex.imatch(.file_extension, '^[sdx]{0,1}ht[ml]{0,2}$') or
+          .file_extension in~ $file_extensions_common_archives or
+          .file_type == "html"
+      ) and 
+      any(file.explode(.),
+          any(.flavors.yara, . == "javascript_file") and
+
+          // Meta tag includes refresh and file:// strings
+          any(.scan.strings.strings,
+            strings.ilike(.,
+                '*document.execCommand("copy")*',
+                '*navigator.clipboard.write(*',
+                '*navigator.clipboard.writeText(*'
+            )
+          )
+      )
+  )
+
+  and (
+    (
+      // unsolicited
+      not profile.by_sender_email().solicited
+      // negate highly trusted sender domains unless they fail DMARC authentication
+      and (
+          (
+            sender.email.domain.root_domain in $high_trust_sender_root_domains
+            and (
+              any(distinct(headers.hops, .authentication_results.dmarc is not null),
+                  strings.ilike(.authentication_results.dmarc, "*fail")
+              )
+            )
+          )
+          or sender.email.domain.root_domain not in $high_trust_sender_root_domains
+      )
+    )
+    or sender.email.domain.domain == "delivrto.me"
+  )
+tags:
+  - "Suspicious Attachment"
+  - "Pastejacking"
