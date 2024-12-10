@@ -2,7 +2,7 @@ name: "Attachment: Extended HTML File Format (Unsolicited)"
 description: |
   HTML attachment using an extended HTML (XHTML) file format (.xht, .xhtm, .xhtml).
 type: "rule"
-severity: "low"
+severity: "high"
 authors:
   - twitter: "delivr_to"
 references:
