@@ -1,0 +1,42 @@
+name: "Attachment: Office Stylesheet Scripting"
+description: |
+  A document, or zipped document that makes use of XLST stylesheet scripting.
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to?id=e3d89f22-df99-4693-b788-03022288ec43
+source: |
+  type.inbound
+  and any(attachments,
+      (
+          1 of (
+              // Office macro files
+              .file_extension in~ $file_extensions_macros,
+              // explode archives
+              .file_extension in~ $file_extensions_common_archives,
+              // detect files without an extension
+              .file_type in ("7z")
+          ) 
+          and any(file.explode(.),
+              .file_extension == "xml" and 
+              any(.scan.strings.strings, strings.icontains(., "ms:script"))
+          )
+          and any(file.explode(.),
+              any(.flavors.yara, . == "vb_file") and 
+              any(.scan.strings.strings, strings.icontains(., "transformNodeToObject"))
+          )
+      )    
+  )
+  and (
+      not profile.by_sender().solicited
+      or (
+          profile.by_sender().any_messages_malicious_or_spam
+          and not profile.by_sender().any_false_positives
+      )
+      or sender.email.domain.domain == "delivrto.me"
+  )
+
+tags:
+  - "Suspicious Attachment"
