@@ -57,7 +57,7 @@ You can also integrate delivr.to directly with Sublime as mentioned [here](https
 | [Attachment: HTML Smuggling with msSaveOrOpenBlob](sublime-rules/general/attachment_mssaveoropenblob.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=be91a311-a023-4221-96da-6f5b717fdc54)        | 
 | [Attachment: AutoIt Script File (Unsolicited)](sublime-rules/general/link_zipped_script.yml) 	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=84e421f8-ffc6-425b-b64d-df0a32e8c679)        | 
 | [Attachment: Microsoft Word SMB-hosted Remote Template Injection](sublime-rules/general/attachment_smb_remote_template_injection.yml) | General | [![](assets/delivrto.png)](https://delivr.to/payloads?id=73895e1a-4c15-4d1e-8e17-60f05baafdd2) |
-| [Attachment: Office Stylesheet Scripting](sublime-rules/general/attachment_office_stylesheet_scripting.yml) | General | [![](assets/delivrto.png)](https://delivr.to?id=e3d89f22-df99-4693-b788-03022288ec43) |
+| [Attachment: Office Stylesheet Scripting](sublime-rules/general/attachment_office_stylesheet_scripting.yml) | General | [![](assets/delivrto.png)](https://delivr.to?id=7d1a16d0-0b46-4feb-8e97-1d193639a0e9) |
 
 ## Yara Rules
 

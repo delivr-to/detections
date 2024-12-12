@@ -6,7 +6,7 @@ severity: "medium"
 authors:
   - twitter: "delivr_to"
 references:
-  - https://delivr.to?id=e3d89f22-df99-4693-b788-03022288ec43
+  - https://delivr.to?id=7d1a16d0-0b46-4feb-8e97-1d193639a0e9
 source: |
   type.inbound
   and any(attachments,
