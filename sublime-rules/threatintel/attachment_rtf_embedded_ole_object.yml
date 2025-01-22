@@ -1,0 +1,44 @@
+name: "Attachment: RTF with Embedded OLE Object (Unsolicited)"
+description: |
+  An RTF file with an embedded OLE object from an unsolicited source. This format could be used to deliver a weaponized RTF file, such as CVE-2025-21298.
+type: "rule"
+severity: "high"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/?id=d22c9632-3c31-44a9-ac09-df6c01cc0a26
+  - https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-21298
+source: |
+  type.inbound
+
+  and any(attachments,
+      (
+          // RTF is a direct attachment or this is an archive format
+          .file_type == "rtf"
+          or .file_extension in $file_extensions_common_archives
+      ) 
+      and any(file.explode(.),
+          // The file is an RTF
+          .file_extension == "rtf" and 
+          
+          //   {\rtf1{\object\objhtml\objw1\objh1\objupdate\rsltpict{\*\objclass delivr}{\*\objdata ...
+          any(.scan.strings.strings, strings.ilike(., "*\\object*")) and 
+          any(.scan.strings.strings, strings.ilike(., "*\\objhtml*")) and 
+          any(.scan.strings.strings, strings.ilike(., "*\\objupdate*")) and 
+          any(.scan.strings.strings, strings.ilike(., "*\\objdata*"))
+      )
+  )
+  and (
+      (
+          not profile.by_sender_email().solicited
+          and profile.by_sender_email().prevalence in ("new", "outlier")
+      )
+      or (
+          profile.by_sender_email().any_messages_malicious_or_spam
+          and not profile.by_sender_email().any_false_positives
+      )
+      or sender.email.domain.domain == "delivrto.me"
+  )
+tags:
+  - "Suspicious Attachment"
+  - "CVE-2025-21298"
