@@ -20,6 +20,7 @@ You can also integrate delivr.to directly with Sublime as mentioned [here](https
 
 | Rule Name                                            | Type       | Payload 	| 
 |------------------------------------------------------|------------|----------	| 
+| [Attachment: Nested 7-Zip Archives CVE-2025-0411 (Unsolicited)](sublime-rules/threatintel/attachment_nested_7zip.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/?id=68d7b0e8-4faf-47d0-9b5e-e8c083156ef6)        | 
 | [Attachment: RTF with Embedded OLE Object (Unsolicited)](sublime-rules/threatintel/attachment_rtf_embedded_ole_object.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/?id=d22c9632-3c31-44a9-ac09-df6c01cc0a26)        | 
 | [Body: Img Element Exploiting CVE-2024-38021 (Unsolicited)](sublime-rules/threatintel/body_cve_2024_38021.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=a0c7d2a6-4fb0-4120-b658-17a408c2d68e)        | 
 | [Link: PIF File from Suspicious Source (AgentTesla)](sublime-rules/threatintel/link_agenttesla_pif.yml ) 	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=756f48df-4e6b-4855-bbb6-e673dfd4c705)        | 

@@ -1,0 +1,27 @@
+name: "Attachment: Nested 7-Zip Archives CVE-2025-0411 (Unsolicited)"
+description: |
+  This rule detects an unsolicited email with a 7-Zip archive that contains another 7-Zip archive, this may be an attempt to exploit CVE-2025-0411, which bypasses Windows Mark-of-the-Web (MoTW) protections.
+type: "rule"
+severity: "medium"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=68d7b0e8-4faf-47d0-9b5e-e8c083156ef6
+  - https://www.trendmicro.com/en_ae/research/25/a/cve-2025-0411-ukrainian-organizations-targeted.html
+source: |
+  type.inbound
+  and any(attachments, 
+      any(file.explode(.),
+          .file_extension == "7z" and
+          any(.scan.yara.matches, 
+              .name == "SUSP_NESTED_7ZIP_Feb25"
+          )
+      )
+  )
+  and (
+    not profile.by_sender_email().solicited
+    or sender.email.domain.domain == "delivrto.me"
+  )
+tags:
+  - "Suspicious Attachment"
+  - "CVE-2025-0411"
