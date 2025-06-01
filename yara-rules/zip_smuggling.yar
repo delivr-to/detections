@@ -57,7 +57,7 @@ rule SUSP_ZIP_Smuggling_Egg_Jun01
     strings:
         $lfh  = { 50 4B 03 04 }            // Local File Header
         $eocd = { 50 4B 05 06 }            // End of Central Directory
-        $egg  = { 55 55 55 55 }            // Example payload marker (used to anchor detection contextually)
+        $egg  = { 55 55 55 55 }            // Egghunter Byte Sequence
 
     condition:
         // Zip File Header
@@ -73,6 +73,7 @@ rule SUSP_ZIP_Smuggling_Egg_Jun01
 
         // Compute end of file content:
         // lfh_offset + lfh_size + name + extra + compressed_size
+        // Check byte sequence is after last file content and before central directory
         $egg in (
             @lfh[#lfh] + 30 + uint16(@lfh[#lfh] + 26) + uint16(@lfh[#lfh] + 28) + uint32(@lfh[#lfh] + 18)
             ..
