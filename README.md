@@ -67,6 +67,8 @@ Below is the list of Yara rules in the repo.
 
 | Rule Name                                            | Type       | Payload 	| 
 |------------------------------------------------------|------------|----------	| 
+| [SUSP_ZIP_Smuggling_Jun01](yara-rules/zip_smuggling.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/?id=2e5ed859-746f-4e1f-a93a-1e0b0985a576)        | 
+| [SUSP_ZIP_Smuggling_Egg_Jun01](yara-rules/zip_smuggling_egg.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/?id=2e5ed859-746f-4e1f-a93a-1e0b0985a576)        | 
 | [SUSP_HTML_WASM_Smuggling](yara-rules/html_wasm.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=126f0f5f-f2da-488e-9c82-af0aea90f154)        | 
 | [SUSP_HTML_B64_WASM_Blob](yara-rules/html_wasm.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=126f0f5f-f2da-488e-9c82-af0aea90f154)        | 
 | [SUSP_ZPAQ_Archive_Nov23](yara-rules/zpaq_archives.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=33ac88a5-56fd-4c64-b01d-9489ea1fe00e)        | 
