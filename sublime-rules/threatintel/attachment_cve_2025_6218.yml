@@ -1,0 +1,46 @@
+name: "Attachment: Archive with Directory Traversal CVE-2025-6218 (Unsolicited)"
+description: |
+  An archive file (RAR or ZIP) that includes evidence of a directory traversal that could be used to exploit CVE-2025-6218, a vulnerability in WinRAR prior to version 7.12.
+type: "rule"
+severity: "high"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=2b63ecb3-0e81-4698-b343-d7be8c60c20a
+  - https://nvd.nist.gov/vuln/detail/CVE-2025-6218
+source: |
+  type.inbound
+  and any(attachments,
+      .file_extension in $file_extensions_common_archives
+      and any(file.explode(.),
+          any(.scan.zip.attempted_files, 
+              regex.icontains(., '(\.\.\s\.\\){1,}')
+          ) or 
+          any(.scan.yara.matches, 
+              .name == "SUSP_archive_CVE_2025_6218_Jul25"
+          )
+      )
+  )
+  and (
+      (
+          // unsolicited
+          not profile.by_sender_email().solicited
+          // negate highly trusted sender domains unless they fail DMARC authentication
+          and (
+              (
+                  sender.email.domain.root_domain in $high_trust_sender_root_domains
+                  and (
+                      any(distinct(headers.hops, .authentication_results.dmarc is not null),
+                          strings.ilike(.authentication_results.dmarc, "*fail")
+                      )
+                  )
+              )
+              or sender.email.domain.root_domain not in $high_trust_sender_root_domains
+          )
+      )
+      or sender.email.domain.domain == "delivrto.me"
+  )
+
+tags:
+  - "Suspicious Attachment"
+  - "CVE-2025-6218"
