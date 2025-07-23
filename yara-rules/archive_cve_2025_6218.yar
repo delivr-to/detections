@@ -13,4 +13,5 @@ rule SUSP_archive_CVE_2025_6218_Jul25 {
         uint32(0) == 0x04034b50)        // Zip File Header
         and filesize < 1024KB 
         and any of ($t*) in (8..504)
+        and (#t1 > 1 or #t2 > 1)
 }
