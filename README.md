@@ -67,6 +67,7 @@ Below is the list of Yara rules in the repo.
 
 | Rule Name                                            | Type       | Payload 	| 
 |------------------------------------------------------|------------|----------	| 
+| [SUSP_archive_CVE_2025_6218_Jul25](yara-rules/archive_cve_2025_6218.yar)	               | Threat Intel    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=2b63ecb3-0e81-4698-b343-d7be8c60c20a)        |
 | [SUSP_ZIP_Smuggling_Jun01](yara-rules/zip_smuggling.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/?id=2e5ed859-746f-4e1f-a93a-1e0b0985a576)        | 
 | [SUSP_ZIP_Smuggling_Egg_Jun01](yara-rules/zip_smuggling.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/?id=2e5ed859-746f-4e1f-a93a-1e0b0985a576)        | 
 | [SUSP_HTML_WASM_Smuggling](yara-rules/html_wasm.yar)	               | General    |   [![](assets/delivrto.png)](https://delivr.to/payloads?id=126f0f5f-f2da-488e-9c82-af0aea90f154)        | 
