@@ -1,0 +1,61 @@
+name: "Link: FileJacking Indicators (Unsolicited)"
+description: |
+  An unsolicited link to a website that contains (or downloads a file that contains) JavaScript indicators related to file system access via Chromium APIs, commonly used to achieve a FileJacking attack.
+type: "rule"
+severity: "high"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=8c1ea0b4-26e2-44bb-be2c-0cc9dd50b8e7
+  - https://delivr.to/payloads?id=72c6ad20-f8a4-4c3d-94bc-e2baa9d439ef
+  - https://print3m.github.io/blog/filejacking-initial-access-with-file-system-api
+source: |
+  type.inbound
+
+  and any(body.links,
+      any(file.explode(ml.link_analysis(.).final_dom),
+          any(.flavors.yara, . == 'javascript_file') and
+          
+          // File System API elements for:
+          // - installing event listener for file/dir drop (not essential to attack)
+          // - getting handle to file/dir
+          // - requesting permissions to read and/or write to file
+          // - reading file content
+          length(filter(['addEventListener', 'requestPermission', 'getAsFileSystemHandle', 'getFile'],
+              . in ..scan.javascript.identifiers
+          )) >= 3 and
+          
+          // Elements for:
+          // - installing event listener to trigger on file dragged and dropped onto page
+          // - one of read/write permission combinations
+          any(['drop', 'read', 'readwrite'],
+              . in ..scan.javascript.strings
+          )
+      ) or 
+      // Identical to the above but cover the case that it's a downloaded file
+      any(ml.link_analysis(.).files_downloaded,
+          any(file.explode(.),
+              any(.flavors.yara, . == 'javascript_file') and
+              length(filter(['addEventListener', 'requestPermission', 'getAsFileSystemHandle', 'getFile'],
+                  . in ..scan.javascript.identifiers
+              )) >= 3 and
+              any(['drop', 'read', 'readwrite'], . in ..scan.javascript.strings)
+          )
+      )
+  )
+
+  and (
+      (
+          not profile.by_sender_email().solicited
+          and profile.by_sender_email().prevalence in ("new", "outlier")
+      )
+      or (
+          profile.by_sender_email().any_messages_malicious_or_spam
+          and not profile.by_sender_email().any_messages_benign
+      )
+      or sender.email.domain.domain == "delivrto.me"
+  )
+
+tags:
+  - "Suspicious Link"
+  - "FileJacking"

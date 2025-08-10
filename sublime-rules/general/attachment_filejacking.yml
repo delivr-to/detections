@@ -1,0 +1,57 @@
+name: "Attachment: FileJacking Indicators (Unsolicited)"
+description: |
+  An unsolicited attachment with an SVG or HTML file format, sent by a first time sender or known-bad source, that includes JavaScript indicators related to file system access via Chromium APIs, commonly used to achieve a FileJacking attack.
+type: "rule"
+severity: "high"
+authors:
+  - twitter: "delivr_to"
+references:
+  - https://delivr.to/payloads?id=8c1ea0b4-26e2-44bb-be2c-0cc9dd50b8e7
+  - https://delivr.to/payloads?id=72c6ad20-f8a4-4c3d-94bc-e2baa9d439ef
+  - https://print3m.github.io/blog/filejacking-initial-access-with-file-system-api
+source: |
+  type.inbound
+
+  and any(attachments,
+      (
+          // HTML file formats including svg, shtml, xht, etc.
+          regex.imatch(.file_extension, '^([sdx]{0,1}ht[ml]{0,2}|svgz?)') or 
+          .file_type == "html"
+      ) and
+      any(file.explode(.),
+          // JavaScript content present in the HTML file
+          any(.flavors.yara, . == 'javascript_file') and
+          
+          // File System API elements for:
+          // - installing event listener for file/dir drop (not essential to attack)
+          // - getting handle to file/dir
+          // - requesting permissions to read and/or write to file
+          // - reading file content
+          length(filter(['addEventListener', 'requestPermission', 'getAsFileSystemHandle', 'getFile'],
+              . in ..scan.javascript.identifiers
+          )) >= 3 and
+          
+          // Elements for:
+          // - installing event listener to trigger on file dragged and dropped onto page
+          // - one of read/write permission combinations
+          any(['drop', 'read', 'readwrite'],
+              . in ..scan.javascript.strings
+          )
+      )
+  )
+
+  and (
+      (
+          not profile.by_sender_email().solicited
+          and profile.by_sender_email().prevalence in ("new", "outlier")
+      )
+      or (
+          profile.by_sender_email().any_messages_malicious_or_spam
+          and not profile.by_sender_email().any_messages_benign
+      )
+      or sender.email.domain.domain == "delivrto.me"
+  )
+
+tags:
+  - "Suspicious Attachment"
+  - "FileJacking"
